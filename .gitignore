@@ -1,0 +1,61 @@
+# Node.js related files
+/node_modules                # Exclude all Node modules
+/package-lock.json           # Exclude package lock file (auto-generated)
+/dist                        # Build directory (if generated during build)
+/coverage                    # Test coverage output
+
+# Environment variables
+.env                         # Exclude environment configuration for security
+
+# Logs and error reporting
+*.log                        # Ignore all log files
+/logs                        # Ignore custom log directory
+npm-debug.log*               # Ignore npm debug log files
+yarn-debug.log*              # Ignore yarn debug logs
+yarn-error.log*              
+
+# OS specific files
+.DS_Store                    # macOS Finder metadata
+Thumbs.db                    # Windows thumbnail cache
+*.bak                        # Backup files
+*.swp                        # Vi/Vim swap files
+
+# IDE / Editor files
+/.vscode/                    # VSCode config files
+.idea/                       # JetBrains IDE config files
+*.iml                        # IntelliJ project files
+*.sublime-workspace          # Sublime Text workspace
+*.sublime-project            # Sublime Text project
+
+# Static assets
+/public/uploads              # Uploaded files or user-generated content
+
+# Compiled files
+*.out                        # Output binaries
+*.exe                        # Executable files
+
+# Temporary files
+/tmp                         # Temp files
+*.temp                       # Temporary build files
+*.cache                      # Cache files
+
+# Build artifacts
+/build                       # Compiled frontend builds
+/.next                       # Next.js build directory
+/.nuxt                       # Nuxt.js build directory
+
+# Git related files
+.gitignore                   # Ignore itself
+
+# Database and generated files
+/db/backup.sql               # Database backup files
+*.sqlite                     # SQLite database files
+/secrets.json                # JSON secrets file
+
+# API Documentation
+/api-docs                     # Auto-generated API documentation (Swagger, etc.)
+/apidoc                       # API docs if generated during build
+
+# Others
+.env.local                   # Local development environment variables
+.env.production              # Production environment configuration
