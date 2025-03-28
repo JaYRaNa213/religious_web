@@ -38,10 +38,15 @@ export const loginUser = async (email, password) => {
     throw new Error('Invalid email or password');
   }
 
-  // Generate JWT token
-  const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-    expiresIn: '1d',
-  });
+// Generate JWT token correctly
+const token = jwt.sign(
+  { id: user._id.toString(), email: user.email },
+  process.env.JWT_SECRET, // Corrected name
+  {
+    expiresIn: process.env.JWT_EXPIRY || '1d',
+  }
+);
+
 
   return token;
 };
@@ -50,3 +55,4 @@ export const loginUser = async (email, password) => {
 export const logoutUser = async () => {
   return 'User logged out successfully';
 };
+
