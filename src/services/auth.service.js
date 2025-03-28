@@ -5,7 +5,9 @@ import bcrypt from 'bcryptjs';
 // Mock database for demo purposes
 const users = [];
 
-// Register user logic
+// ========================
+// ✅ Register User Logic
+// ========================
 export const registerUser = async (userData) => {
   const { name, email, password } = userData;
 
@@ -25,7 +27,9 @@ export const registerUser = async (userData) => {
   return newUser;
 };
 
-// Login user logic
+// ========================
+// ✅ Login User Logic
+// ========================
 export const loginUser = async (email, password) => {
   const user = users.find((user) => user.email === email);
   if (!user) {
@@ -38,21 +42,38 @@ export const loginUser = async (email, password) => {
     throw new Error('Invalid email or password');
   }
 
-// Generate JWT token correctly
-const token = jwt.sign(
-  { id: user._id.toString(), email: user.email },
-  process.env.JWT_SECRET, // Corrected name
-  {
-    expiresIn: process.env.JWT_EXPIRY || '1d',
-  }
-);
-
+  // Generate JWT token correctly
+  const token = jwt.sign(
+    { id: user.id.toString(), email: user.email }, // Correct `user.id`
+    process.env.ACCESS_TOKEN_SECRET, // Corrected name
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY || '1d',
+    }
+  );
 
   return token;
 };
 
-// Logout user logic
+// ========================
+// ✅ Logout User Logic
+// ========================
 export const logoutUser = async () => {
   return 'User logged out successfully';
 };
+
+// ========================
+// ✅ Get User Profile Logic
+// ========================
+export const getUserProfile = async (userId) => {
+  const user = users.find((user) => user.id.toString() === userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  // Return user profile without the password
+  const { password, ...userWithoutPassword } = user;
+  return userWithoutPassword;
+};
+
+
 

@@ -37,3 +37,23 @@ export const logout = async (req, res) => {
     message: await logoutUser(),
   });
 };
+
+import { getUserProfile } from '../services/auth.service.js';
+
+// ========================
+// ✅ Get User Profile Controller
+// ========================
+export const getProfile = async (req, res) => {
+  try {
+    const userId = req.user.id; // Extracted from decoded JWT token
+    const userProfile = await getUserProfile(userId);
+
+    res.status(200).json({
+      success: true,
+      message: 'User profile fetched successfully',
+      data: userProfile,
+    });
+  } catch (error) {
+    res.status(404).json({ success: false, message: error.message });
+  }
+};

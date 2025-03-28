@@ -1,30 +1,22 @@
-// Import required modules
 import express from 'express';
-import {
-  bookPooja,
-  getBookingHistory,
-  cancelBooking,
-} from '../controllers/booking.controller.js';
+import { createBooking, getAllBookings, getBookingById, updateBooking, deleteBooking } from '../controllers/booking.controller.js';
+import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
-// Define routes for booking functionality
-/**
- * @route POST /api/booking/book-pooja
- * @description Book a pooja
- */
-router.post('/book-pooja', bookPooja);
+// Create Booking
+router.post('/', authMiddleware, createBooking);
 
-/**
- * @route GET /api/booking/history
- * @description Get booking history
- */
-router.get('/history', getBookingHistory);
+// Get All Bookings
+router.get('/', authMiddleware, getAllBookings);
 
-/**
- * @route DELETE /api/booking/cancel/:id
- * @description Cancel a booking
- */
-router.delete('/cancel/:id', cancelBooking);
+// Get Single Booking
+router.get('/:id', authMiddleware, getBookingById);
 
-export default router; // Export the router
+// Update Booking
+router.put('/:id', authMiddleware, updateBooking);
+
+// Delete Booking
+router.delete('/:id', authMiddleware, deleteBooking);
+
+export default router;

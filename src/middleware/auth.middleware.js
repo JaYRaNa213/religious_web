@@ -1,7 +1,7 @@
 // Import required modules
 import jwt from 'jsonwebtoken';
-import { ApiError } from '../utils/ApiError.js'; // Custom error handler
-import { User } from '../models/user.model.js'; // Import User model
+import ApiError from '../utils/ApiError.js';
+import User from '../models/user.model.js'; // Import User model
 import asyncHandler from '../utils/asyncHandler.js'; // Async handler for error management
 
 // Middleware to verify JWT token
@@ -35,3 +35,35 @@ export const verifyToken = asyncHandler(async (req, res, next) => {
     throw new ApiError(401, error?.message || 'Unauthorized! Invalid token.');
   }
 });
+
+// ========================
+// ✅ Auth Middleware to Verify JWT
+// ========================
+export const protect = (req, res, next) => {
+  let token;
+
+  // Get token from headers
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  // Check if token exists
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: 'Not authorized, no token',
+    });
+  }
+
+  try {
+    // Verify token
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      message: 'Not authorized, invalid token',
+    });
+  }
+};
