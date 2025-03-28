@@ -1,44 +1,31 @@
-// // payment.routes.js
-
-// // Import required modules
-// import express from 'express';
-// import { initiatePayment, getPaymentStatus, handleWebhook } from '../controllers/payment.controller.js';
-
-// const router = express.Router();
-
-// // Define routes for payment functionality
-// /**
-//  * @route POST /api/payment/initiate
-//  * @description Initiate payment
-//  */
-// router.post('/initiate', initiatePayment);
-
-// /**
-//  * @route GET /api/payment/status/:id
-//  * @description Get payment status
-//  */
-// router.get('/status/:id', getPaymentStatus);
-
-// /**
-//  * @route POST /api/payment/webhook
-//  * @description Handle payment webhook
-//  */
-// router.post('/webhook', handleWebhook);
-
-// export default router; // Export the router
-
-// Import required modules
+// src/routes/payment.routes.js
 import express from 'express';
-import { processPayment, getUserPayments } from '../controllers/payment.controller.js';
+import {
+  initiatePayment,
+  verifyPayment,
+  getPaymentStatus,
+  getUserPayments,
+} from '../controllers/payment.controller.js';
 
 const router = express.Router();
 
-// Define routes for payment functionality
 /**
- * @route POST /api/payments/process
- * @description Process payment
+ * @route POST /api/payments/initiate
+ * @description Initiate a new payment
  */
-router.post('/process', processPayment);
+router.post('/initiate', initiatePayment);
+
+/**
+ * @route POST /api/payments/verify
+ * @description Verify payment status
+ */
+router.post('/verify', verifyPayment);
+
+/**
+ * @route GET /api/payments/status/:id
+ * @description Get payment status by ID
+ */
+router.get('/status/:id', getPaymentStatus);
 
 /**
  * @route GET /api/payments/user/:userId
@@ -46,4 +33,4 @@ router.post('/process', processPayment);
  */
 router.get('/user/:userId', getUserPayments);
 
-export default router; // Export the router
+export default router;

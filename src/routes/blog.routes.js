@@ -1,37 +1,21 @@
 import express from 'express';
-import {
-  getAllBlogs,
-  addBlog,
-  updateBlog,
-  deleteBlog,
-} from '../controllers/blog.controller.js';
-import { verifyToken } from '../middleware/auth.middleware.js';
-import { checkRole } from '../middleware/role.middleware.js';
+import { getAllBlogs, getBlogById, addBlog, updateBlog, deleteBlog } from '../controllers/blog.controller.js';
 
 const router = express.Router();
 
-/**
- * @route GET /api/blogs
- * @description Get all blogs (Public route)
- */
+// ✅ Get all blogs
 router.get('/', getAllBlogs);
 
-/**
- * @route POST /api/blogs
- * @description Add a new blog (Only Admins can add blogs)
- */
-router.post('/', verifyToken, checkRole(['admin']), addBlog);
+// ✅ Get blog by ID
+router.get('/:id', getBlogById);
 
-/**
- * @route PUT /api/blogs/:id
- * @description Update a blog (Only Admins can update blogs)
- */
-router.put('/:id', verifyToken, checkRole(['admin']), updateBlog);
+// ✅ Add a new blog
+router.post('/', addBlog);
 
-/**
- * @route DELETE /api/blogs/:id
- * @description Delete a blog (Only Admins can delete blogs)
- */
-router.delete('/:id', verifyToken, checkRole(['admin']), deleteBlog);
+// ✅ Update blog by ID
+router.put('/:id', updateBlog);
+
+// ✅ Delete blog by ID
+router.delete('/:id', deleteBlog);
 
 export default router;

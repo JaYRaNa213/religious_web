@@ -9,7 +9,7 @@ const users = [];
 // ✅ Register User Logic
 // ========================
 export const registerUser = async (userData) => {
-  const { name, email, password } = userData;
+  const { name, email, password ,userId} = userData;
 
   // Check if user already exists
   const existingUser = users.find((user) => user.email === email);
@@ -21,7 +21,7 @@ export const registerUser = async (userData) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // Create new user and push to mock DB
-  const newUser = { id: Date.now(), name, email, password: hashedPassword };
+  const newUser = { userId: Date.now(), name, email, password: hashedPassword };
   users.push(newUser);
 
   return newUser;

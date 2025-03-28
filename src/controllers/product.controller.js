@@ -1,70 +1,138 @@
-// product.controller.js
-import {
-  getAllProducts,
-  getProductById,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-} from '../services/product.service.js';
+// src/controllers/product.controller.js
 
-/**
- * @description Controller to get all products
- */
-export const fetchAllProducts = async (req, res) => {
+// Mock database to store product data temporarily (replace with DB logic later)
+let products = [];
+
+// 📌 Create Product
+export const addProduct = async (req, res) => {
   try {
-    const products = await getAllProducts();
-    res.status(200).json({ success: true, data: products });
+    const { name, description, price } = req.body;
+
+    // Validate required fields
+    if (!name || !description || !price) {
+      return res.status(400).json({ success: false, message: 'All fields are required' });
+    }
+
+    // Create a mock product object
+    const product = {
+      id: Date.now(),
+      name,
+      description,
+      price,
+      imageUrl: req.file ? req.file.path : 'No image uploaded',
+    };
+
+    // Add product to the array
+    products.push(product);
+
+    res.status(201).json({
+      success: true,
+      message: 'Product added successfully',
+      data: product,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
-/**
- * @description Controller to get product by ID
- */
-export const fetchProductById = async (req, res) => {
+// 📌 Get All Products
+export const getAllProducts = async (req, res) => {
   try {
-    const product = await getProductById(req.params.id);
-    res.status(200).json({ success: true, data: product });
+    if (products.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No products found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'All products retrieved successfully',
+      data: products,
+    });
   } catch (error) {
-    res.status(404).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
-/**
- * @description Controller to add a new product
- */
-export const createProduct = async (req, res) => {
+// 📌 Get Product by ID
+export const getProductById = async (req, res) => {
   try {
-    const newProduct = await addProduct(req.body);
-    res.status(201).json({ success: true, data: newProduct });
+    const { id } = req.params;
+    const product = products.find((p) => p.id == id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Product retrieved successfully',
+      data: product,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
-/**
- * @description Controller to update product
- */
-export const modifyProduct = async (req, res) => {
+// 📌 Update Product by ID
+export const updateProduct = async (req, res) => {
   try {
-    const updatedProduct = await updateProduct(req.params.id, req.body);
-    res.status(200).json({ success: true, data: updatedProduct });
+    const { id } = req.params;
+    const { name, description, price } = req.body;
+
+    const productIndex = products.findIndex((p) => p.id == id);
+
+    if (productIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found',
+      });
+    }
+
+    // Update product data
+    products[productIndex] = {
+      ...products[productIndex],
+      name: name || products[productIndex].name,
+      description: description || products[productIndex].description,
+      price: price || products[productIndex].price,
+      imageUrl: req.file ? req.file.path : products[productIndex].imageUrl,
+    };
+
+    res.status(200).json({
+      success: true,
+      message: 'Product updated successfully',
+      data: products[productIndex],
+    });
   } catch (error) {
-    res.status(404).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
-/**
- * @description Controller to delete product
- */
-export const removeProduct = async (req, res) => {
+// 📌 Delete Product by ID
+export const deleteProduct = async (req, res) => {
   try {
-    const result = await deleteProduct(req.params.id);
-    res.status(200).json({ success: true, message: result });
+    const { id } = req.params;
+    const productIndex = products.findIndex((p) => p.id == id);
+
+    if (productIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found',
+      });
+    }
+
+    // Remove product from the array
+    products.splice(productIndex, 1);
+
+    res.status(200).json({
+      success: true,
+      message: 'Product deleted successfully',
+    });
   } catch (error) {
-    res.status(404).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
-
-//////kk

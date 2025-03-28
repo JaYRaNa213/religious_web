@@ -14,5 +14,6 @@ router.use('/booking', bookingRoutes);
 router.use('/products', productRoutes);
 router.use('/blogs', blogRoutes);
 router.use('/payment', paymentRoutes);
+router.use('/email', emailRoutes);
 
 export default router; // Export the main router

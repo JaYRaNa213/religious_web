@@ -1,22 +1,23 @@
+
+
+// src/routes/booking.routes.js
 import express from 'express';
-import { createBooking, getAllBookings, getBookingById, updateBooking, deleteBooking } from '../controllers/booking.controller.js';
-import { authMiddleware } from '../middleware/auth.middleware.js';
+import {
+  createBooking,
+  getAllBookings,
+  getSingleBooking,
+  updateBooking,
+  deleteBooking,
+} from '../controllers/booking.controller.js';
 
 const router = express.Router();
 
-// Create Booking
-router.post('/', authMiddleware, createBooking);
-
-// Get All Bookings
-router.get('/', authMiddleware, getAllBookings);
-
-// Get Single Booking
-router.get('/:id', authMiddleware, getBookingById);
-
-// Update Booking
-router.put('/:id', authMiddleware, updateBooking);
-
-// Delete Booking
-router.delete('/:id', authMiddleware, deleteBooking);
+// Booking Routes
+router.post('/', createBooking); // Create booking
+router.get('/', getAllBookings); // Get all bookings
+router.get('/:id', getSingleBooking); // Get single booking by ID
+router.put('/:id', updateBooking); // Update booking
+router.delete('/:id', deleteBooking); // Delete booking
 
 export default router;
+

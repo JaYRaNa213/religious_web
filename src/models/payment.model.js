@@ -1,32 +1,28 @@
-// Import mongoose to define the schema and model
+// src/models/payment.model.js
 import mongoose from 'mongoose';
 
 // Define the Payment schema
 const paymentSchema = new mongoose.Schema({
-  // Reference to the user who made the payment
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
-  // Amount paid by the user
   amount: {
     type: Number,
     required: true,
   },
-  // Payment method (e.g., credit card, UPI, etc.)
   paymentMethod: {
     type: String,
+    enum: ['credit_card', 'debit_card', 'upi', 'net_banking'],
     required: true,
   },
-  // Status of the payment (success, pending, failed)
   status: {
     type: String,
-    enum: ['success', 'pending', 'failed'],
+    enum: ['pending', 'success', 'failed'],
     default: 'pending',
   },
-  // Date and time of the payment
-  paymentDate: {
+  createdAt: {
     type: Date,
     default: Date.now,
   },
