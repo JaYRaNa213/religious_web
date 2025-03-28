@@ -1,16 +1,30 @@
 // Import required modules
-const express = require('express');
+import express from 'express';
+import {
+  bookPooja,
+  getBookingHistory,
+  cancelBooking,
+} from '../controllers/booking.controller.js';
+
 const router = express.Router();
-const bookingController = require('../controllers/booking.controller');
 
 // Define routes for booking functionality
-// @route POST /api/booking/book-pooja - Book a pooja
-router.post('/book-pooja', bookingController.bookPooja);
+/**
+ * @route POST /api/booking/book-pooja
+ * @description Book a pooja
+ */
+router.post('/book-pooja', bookPooja);
 
-// @route GET /api/booking/history - Get booking history
-router.get('/history', bookingController.getBookingHistory);
+/**
+ * @route GET /api/booking/history
+ * @description Get booking history
+ */
+router.get('/history', getBookingHistory);
 
-// @route DELETE /api/booking/cancel/:id - Cancel a booking
-router.delete('/cancel/:id', bookingController.cancelBooking);
+/**
+ * @route DELETE /api/booking/cancel/:id
+ * @description Cancel a booking
+ */
+router.delete('/cancel/:id', cancelBooking);
 
-module.exports = router; // Export the router
+export default router; // Export the router

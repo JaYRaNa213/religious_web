@@ -1,39 +1,38 @@
-// Import the Booking and User models
-const Booking = require('../models/booking.model');
-const User = require('../models/user.model');
+// booking.controller.js
+import { bookPooja, getBookingHistory, cancelBooking } from '../services/booking.service.js';
 
-// Create a new booking
-exports.createBooking = async (req, res) => {
+/**
+ * @description Controller to book a pooja
+ */
+export const createBooking = async (req, res) => {
   try {
-    // Destructure booking details from request body
-    const { userId, service, bookingDate, additionalInfo } = req.body;
-
-    // Create a new booking
-    const booking = new Booking({
-      user: userId,
-      service,
-      bookingDate,
-      additionalInfo,
-    });
-
-    // Save booking to the database
-    await booking.save();
-    res.status(201).json({ message: 'Booking created successfully', booking });
+    const booking = await bookPooja(req.body);
+    res.status(201).json({ success: true, data: booking });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating booking', error });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 
-// Get all bookings for a user
-exports.getUserBookings = async (req, res) => {
+/**
+ * @description Controller to get booking history
+ */
+export const getUserBookings = async (req, res) => {
   try {
-    // Get user ID from request params
-    const userId = req.params.userId;
-
-    // Find all bookings by the user
-    const bookings = await Booking.find({ user: userId }).populate('user');
-    res.json(bookings);
+    const bookings = await getBookingHistory(req.params.userId);
+    res.status(200).json({ success: true, data: bookings });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching bookings', error });
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * @description Controller to cancel a booking
+ */
+export const removeBooking = async (req, res) => {
+  try {
+    const message = await cancelBooking(req.params.bookingId);
+    res.status(200).json({ success: true, message });
+  } catch (error) {
+    res.status(404).json({ success: false, message: error.message });
   }
 };

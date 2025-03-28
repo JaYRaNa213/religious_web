@@ -1,22 +1,33 @@
 // Import required modules
-const express = require('express');
+import express from 'express';
+import { processPayment, getUserPayments } from '../controllers/payment.controller.js';
+
 const router = express.Router();
-const productController = require('../controllers/product.controller');
+// Define routes for payment functionality
+/**
+ * @route POST /api/payments/process
+ * @description Process payment
+ */
+router.post('/process', processPayment);
 
-// Define routes for product management
-// @route GET /api/products - Get all products
-router.get('/', productController.getAllProducts);
+/**
+ * @route GET /api/payments/user/:userId
+ * @description Get all payments for a user
+ */
+router.get('/user/:userId', getUserPayments);
 
-// @route GET /api/products/:id - Get product by ID
-router.get('/:id', productController.getProductById);
+export default router; // Export the router
 
-// @route POST /api/products - Add a new product
-router.post('/', productController.addProduct);
+// import express from 'express';
+// import { addProduct } from '../controllers/product.controller.js';
+// import { upload } from '../middlewares/multer.middleware.js';
 
-// @route PUT /api/products/:id - Update product
-router.put('/:id', productController.updateProduct);
+// const router = express.Router();
 
-// @route DELETE /api/products/:id - Delete product
-router.delete('/:id', productController.deleteProduct);
+// /**
+//  * @route POST /api/products
+//  * @description Add a new product with image upload
+//  */
+// router.post('/', upload.single('productImage'), addProduct);
 
-module.exports = router; // Export the router
+// export default router;

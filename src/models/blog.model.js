@@ -1,5 +1,5 @@
 // Import mongoose to define the schema and model
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Define the Blog schema
 const blogSchema = new mongoose.Schema({
@@ -30,4 +30,5 @@ const blogSchema = new mongoose.Schema({
 });
 
 // Create and export the Blog model
-module.exports = mongoose.model('Blog', blogSchema);
+const Blog = mongoose.model('Blog', blogSchema);
+export default Blog;

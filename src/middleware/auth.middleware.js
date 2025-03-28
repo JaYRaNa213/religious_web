@@ -1,27 +1,37 @@
-// Import JWT to verify the token
-const jwt = require('jsonwebtoken');
+// Import required modules
+import jwt from 'jsonwebtoken';
+import { ApiError } from '../utils/ApiError.js'; // Custom error handler
+import { User } from '../models/user.model.js'; // Import User model
+import asyncHandler from '../utils/asyncHandler.js'; // Async handler for error management
 
 // Middleware to verify JWT token
-exports.verifyToken = (req, res, next) => {
-  // Get token from headers
-  const token = req.headers['authorization'];
-
-  // Check if token is provided
-  if (!token) {
-    return res.status(403).json({ message: 'No token provided' });
-  }
-
+export const verifyToken = asyncHandler(async (req, res, next) => {
   try {
-    // Verify the token using the JWT secret key
-    const decoded = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+    // Get token from cookies or Authorization header
+    const token = req.cookies?.accessToken || req.headers['authorization']?.split(' ')[1];
 
-    // Attach the decoded user ID to the request object
-    req.userId = decoded.id;
+    // Check if token is provided
+    if (!token) {
+      throw new ApiError(403, 'Unauthorized request: No token provided');
+    }
 
-    // Move to the next middleware or route
+    // Verify token using the secret key
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Find user by ID and exclude sensitive fields
+    const user = await User.findById(decoded?.id).select('-password -refreshToken');
+
+    // Check if user exists
+    if (!user) {
+      throw new ApiError(401, 'Invalid Access Token: User not found');
+    }
+
+    // Attach the user to the request object
+    req.user = user;
+
+    // Proceed to the next middleware or route
     next();
   } catch (error) {
-    // Handle invalid token errors
-    res.status(401).json({ message: 'Unauthorized! Invalid token.' });
+    throw new ApiError(401, error?.message || 'Unauthorized! Invalid token.');
   }
-};
+});

@@ -1,38 +1,81 @@
 // Import models and required packages
-const Payment = require('../models/payment.model');
-const axios = require('axios');
+import Payment from '../models/payment.model.js';
+import axios from 'axios';
 
-// Service to initiate payment
-// @param {Object} paymentData - Payment details
-// @returns {Object} - Payment initiation response
+/**
+ * @description Service to initiate payment
+ * @param {Object} paymentData - Payment details
+ * @returns {Object} - Payment initiation response
+ */
 const initiatePayment = async (paymentData) => {
-    const newPayment = await Payment.create(paymentData);
-    // Simulate payment gateway integration
-    const response = await axios.post('https://fake-payment-gateway.com/api/pay', paymentData);
-    return response.data;
+  // Create a new payment record in the database
+  const newPayment = await Payment.create({
+    userId: paymentData.userId,
+    amount: paymentData.amount,
+    status: 'pending',
+    paymentMethod: paymentData.paymentMethod,
+  });
+
+  // Simulate payment gateway integration
+  const response = await axios.post('https://fake-payment-gateway.com/api/pay', {
+    amount: paymentData.amount,
+    currency: 'INR',
+    customer_email: paymentData.email,
+    description: 'Religious Service Payment',
+  });
+
+  // Update payment status based on the gateway response
+  if (response.data.status === 'success') {
+    newPayment.status = 'completed';
+  } else {
+    newPayment.status = 'failed';
+  }
+  await newPayment.save();
+
+  return { success: true, data: newPayment };
 };
 
-// Service to get payment status
-// @param {String} paymentId - Payment ID
-// @returns {Object} - Payment status
+/**
+ * @description Service to get payment status
+ * @param {String} paymentId - Payment ID
+ * @returns {Object} - Payment status
+ */
 const getPaymentStatus = async (paymentId) => {
-    const payment = await Payment.findById(paymentId);
-    return payment;
+  const payment = await Payment.findById(paymentId);
+
+  if (!payment) {
+    throw new Error('Payment not found');
+  }
+
+  return {
+    success: true,
+    data: {
+      id: payment._id,
+      amount: payment.amount,
+      status: payment.status,
+      paymentMethod: payment.paymentMethod,
+    },
+  };
 };
 
-// Service to handle payment webhook
-// @param {Object} webhookData - Webhook payload
-// @returns {String} - Confirmation message
+/**
+ * @description Service to handle payment webhook
+ * @param {Object} webhookData - Webhook payload
+ * @returns {String} - Confirmation message
+ */
 const handleWebhook = async (webhookData) => {
-    // Process webhook data and update payment status
-    const payment = await Payment.findById(webhookData.paymentId);
-    payment.status = webhookData.status;
-    await payment.save();
-    return 'Webhook processed successfully!';
+  const payment = await Payment.findById(webhookData.paymentId);
+
+  if (!payment) {
+    throw new Error('Invalid payment ID in webhook data');
+  }
+
+  // Update payment status based on webhook event
+  payment.status = webhookData.status;
+  await payment.save();
+
+  return 'Webhook processed successfully!';
 };
 
-module.exports = {
-    initiatePayment,
-    getPaymentStatus,
-    handleWebhook,
-};
+// Export all payment services
+export { initiatePayment, getPaymentStatus, handleWebhook };

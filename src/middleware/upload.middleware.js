@@ -1,11 +1,16 @@
 // Import multer for file uploads
-const multer = require('multer');
-const path = require('path');
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get __dirname equivalent in ES Module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Configure storage for uploaded files
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Set destination folder for uploads
+    cb(null, path.join(__dirname, '../uploads/')); // Set destination folder for uploads
   },
   filename: (req, file, cb) => {
     // Create unique file name using current date and original name
@@ -32,7 +37,7 @@ const upload = multer({
 });
 
 // Middleware to handle single file upload
-exports.uploadSingle = (fieldName) => upload.single(fieldName);
+export const uploadSingle = (fieldName) => upload.single(fieldName);
 
 // Middleware to handle multiple file uploads
-exports.uploadMultiple = (fieldName, maxCount) => upload.array(fieldName, maxCount);
+export const uploadMultiple = (fieldName, maxCount) => upload.array(fieldName, maxCount);

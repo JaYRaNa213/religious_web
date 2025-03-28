@@ -1,13 +1,12 @@
 // Import required modules
-const express = require('express');
-const router = express.Router();
+import express from 'express';
+import authRoutes from './auth.routes.js';
+import bookingRoutes from './booking.routes.js';
+import productRoutes from './product.routes.js';
+import blogRoutes from './blog.routes.js';
+import paymentRoutes from './payment.routes.js';
 
-// Import all routes
-const authRoutes = require('./auth.routes');
-const bookingRoutes = require('./booking.routes');
-const productRoutes = require('./product.routes');
-const blogRoutes = require('./blog.routes');
-const paymentRoutes = require('./payment.routes');
+const router = express.Router();
 
 // Use routes with respective prefixes
 router.use('/auth', authRoutes);
@@ -16,4 +15,4 @@ router.use('/products', productRoutes);
 router.use('/blogs', blogRoutes);
 router.use('/payment', paymentRoutes);
 
-module.exports = router; // Export the main router
+export default router; // Export the main router

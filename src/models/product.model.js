@@ -1,5 +1,5 @@
 // Import mongoose to define the schema and model
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Define the Product schema
 const productSchema = new mongoose.Schema({
@@ -35,4 +35,5 @@ const productSchema = new mongoose.Schema({
 });
 
 // Create and export the Product model
-module.exports = mongoose.model('Product', productSchema);
+const Product = mongoose.model('Product', productSchema);
+export default Product;

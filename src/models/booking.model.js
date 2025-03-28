@@ -1,5 +1,5 @@
 // Import mongoose to define the schema and model
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Define the Booking schema
 const bookingSchema = new mongoose.Schema({
@@ -32,4 +32,5 @@ const bookingSchema = new mongoose.Schema({
 });
 
 // Create and export the Booking model
-module.exports = mongoose.model('Booking', bookingSchema);
+const Booking = mongoose.model('Booking', bookingSchema);
+export default Booking;

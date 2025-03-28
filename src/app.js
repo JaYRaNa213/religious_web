@@ -1,38 +1,58 @@
 // Import required packages and modules
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const morgan = require('morgan');
-const dotenv = require('dotenv');
-const path = require('path');
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Import route files
-const authRoutes = require('./src/routes/auth.routes');
-const bookingRoutes = require('./src/routes/booking.routes');
-const productRoutes = require('./src/routes/product.routes');
-const blogRoutes = require('./src/routes/blog.routes');
-const paymentRoutes = require('./src/routes/payment.routes');
+import authRoutes from './routes/auth.routes.js';
+import bookingRoutes from './routes/booking.routes.js';
+import productRoutes from './routes/product.routes.js';
+import blogRoutes from './routes/blog.routes.js';
+import paymentRoutes from './routes/payment.routes.js';
+
+
+
+
+// Import error handling middlewares
+import { notFound, errorHandler } from './middlewares/error.middleware.js';
 
 // Load environment variables from .env file
 dotenv.config();
+
+// Get the __dirname equivalent in ES6
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Initialize Express app
 const app = express();
 
 // Middleware to parse incoming requests with JSON payloads
-app.use(bodyParser.json());
+app.use(express.json({ limit: '16kb' }));
 
 // Middleware to parse URL-encoded data
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 
 // Enable CORS to allow requests from different origins
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
+  })
+);
 
 // Middleware to log HTTP requests for easier debugging
 app.use(morgan('dev'));
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Middleware for parsing cookies
+app.use(cookieParser());
 
 // Define base routes for API endpoints
 app.use('/api/auth', authRoutes);
@@ -41,32 +61,17 @@ app.use('/api/products', productRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/payments', paymentRoutes);
 
+
+
 // Home route to test the API
 app.get('/', (req, res) => {
-    res.send('Welcome to the Religious Website API!');
+  res.send('Welcome to the Religious Website API!');
 });
 
 // Handle 404 errors (resource not found)
-app.use((req, res, next) => {
-    res.status(404).json({
-        success: false,
-        message: 'API endpoint not found!',
-    });
-});
+app.use(notFound);
 
 // Global error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack); // Log error to console
-    res.status(500).json({
-        success: false,
-        message: 'Something went wrong! Please try again later.',
-    });
-});
+app.use(errorHandler);
 
-// Define the server port using environment variable or default to 5000
-const PORT = process.env.PORT || 5000;
-
-// Start the server and listen for requests
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-});
+export default app;

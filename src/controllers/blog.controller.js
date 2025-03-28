@@ -1,35 +1,52 @@
-// Import the Blog model
-const Blog = require('../models/blog.model');
+// blog.controller.js
+import { getAllBlogs, getBlogById, addBlog, updateBlog, deleteBlog } from '../services/blog.service.js';
 
-// Create a new blog post
-exports.createBlog = async (req, res) => {
+// Controller to get all blogs
+export const getBlogs = async (req, res) => {
   try {
-    // Destructure blog details from request body
-    const { title, content, author, tags } = req.body;
-
-    // Create a new blog
-    const blog = new Blog({
-      title,
-      content,
-      author,
-      tags,
-    });
-
-    // Save blog to the database
-    await blog.save();
-    res.status(201).json({ message: 'Blog created successfully', blog });
+    const blogs = await getAllBlogs();
+    res.status(200).json({ success: true, data: blogs });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating blog', error });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Get all blog posts
-exports.getBlogs = async (req, res) => {
+// Controller to get a single blog by ID
+export const getBlog = async (req, res) => {
   try {
-    // Get all blog posts
-    const blogs = await Blog.find();
-    res.json(blogs);
+    const blog = await getBlogById(req.params.id);
+    res.status(200).json({ success: true, data: blog });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching blogs', error });
+    res.status(404).json({ success: false, message: error.message });
+  }
+};
+
+// Controller to add a new blog
+export const createBlog = async (req, res) => {
+  try {
+    const blog = await addBlog(req.body);
+    res.status(201).json({ success: true, data: blog });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// Controller to update a blog
+export const modifyBlog = async (req, res) => {
+  try {
+    const blog = await updateBlog(req.params.id, req.body);
+    res.status(200).json({ success: true, data: blog });
+  } catch (error) {
+    res.status(404).json({ success: false, message: error.message });
+  }
+};
+
+// Controller to delete a blog
+export const removeBlog = async (req, res) => {
+  try {
+    const message = await deleteBlog(req.params.id);
+    res.status(200).json({ success: true, message });
+  } catch (error) {
+    res.status(404).json({ success: false, message: error.message });
   }
 };

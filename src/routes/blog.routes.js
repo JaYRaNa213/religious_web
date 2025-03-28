@@ -1,22 +1,37 @@
-// Import required modules
-const express = require('express');
+import express from 'express';
+import {
+  getAllBlogs,
+  addBlog,
+  updateBlog,
+  deleteBlog,
+} from '../controllers/blog.controller.js';
+import { verifyToken } from '../middlewares/auth.middleware.js';
+import { checkRole } from '../middlewares/role.middleware.js';
+
 const router = express.Router();
-const blogController = require('../controllers/blog.controller');
 
-// Define routes for blog management
-// @route GET /api/blogs - Get all blogs
-router.get('/', blogController.getAllBlogs);
+/**
+ * @route GET /api/blogs
+ * @description Get all blogs (Public route)
+ */
+router.get('/', getAllBlogs);
 
-// @route GET /api/blogs/:id - Get blog by ID
-router.get('/:id', blogController.getBlogById);
+/**
+ * @route POST /api/blogs
+ * @description Add a new blog (Only Admins can add blogs)
+ */
+router.post('/', verifyToken, checkRole(['admin']), addBlog);
 
-// @route POST /api/blogs - Add a new blog
-router.post('/', blogController.addBlog);
+/**
+ * @route PUT /api/blogs/:id
+ * @description Update a blog (Only Admins can update blogs)
+ */
+router.put('/:id', verifyToken, checkRole(['admin']), updateBlog);
 
-// @route PUT /api/blogs/:id - Update a blog
-router.put('/:id', blogController.updateBlog);
+/**
+ * @route DELETE /api/blogs/:id
+ * @description Delete a blog (Only Admins can delete blogs)
+ */
+router.delete('/:id', verifyToken, checkRole(['admin']), deleteBlog);
 
-// @route DELETE /api/blogs/:id - Delete a blog
-router.delete('/:id', blogController.deleteBlog);
-
-module.exports = router; // Export the router
+export default router;

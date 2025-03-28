@@ -1,18 +1,23 @@
-// Error handling middleware
-// @param {Object} err - Error object
-// @param {Object} req - Request object
-// @param {Object} res - Response object
-// @param {Function} next - Next middleware function
-const errorHandler = (err, req, res, next) => {
-  // Set the status code to 500 if not defined
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+import ApiError from '../utils/ApiError.js';
 
-  // Send error response with message and stack trace (optional)
+const errorHandler = (err, req, res, next) => {
+  let statusCode = err.statusCode || 500;
+  let message = err.message || 'Internal Server Error';
+
+  if (err instanceof ApiError) {
+    return res.status(statusCode).json({
+      success: false,
+      message: message,
+      errors: err.errors || [],
+    });
+  }
+
   res.status(statusCode).json({
-      message: err.message,
-      // Only include stack trace in development mode
-      stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+    success: false,
+    message: message,
+    errors: err.errors || [],
+    stack: process.env.NODE_ENV === 'development' ? err.stack : null,
   });
 };
 
-module.exports = errorHandler;
+export default errorHandler;

@@ -1,28 +1,32 @@
-// Import required packages
-const winston = require('winston');
+// logger.js
+import winston from 'winston';
 
-// Configure logger
+/**
+ * @description Configure logger for logging application events
+ */
 const logger = winston.createLogger({
-    level: 'info', // Logging level
-    format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.printf(({ timestamp, level, message }) => {
-            return `${timestamp} [${level.toUpperCase()}]: ${message}`;
-        })
-    ),
-    transports: [
-        // Console transport
-        new winston.transports.Console(),
-        // File transport for error logs
-        new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    ],
+  level: 'info', // Default logging level
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+    })
+  ),
+  transports: [
+    // Log to console
+    new winston.transports.Console(),
+    // Log errors to error.log file
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+  ],
 });
 
-// Log information
-// @param {String} level - Log level
-// @param {String} message - Log message
+/**
+ * @description Log messages with different levels
+ * @param {String} level - Log level (info, error, warn, etc.)
+ * @param {String} message - Log message
+ */
 const log = (level, message) => {
-    logger.log({ level, message });
+  logger.log({ level, message });
 };
 
-module.exports = log;
+export default log;
