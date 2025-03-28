@@ -1,4 +1,4 @@
-// auth.controller.js
+// src/controllers/auth.controller.js
 import { registerUser, loginUser, logoutUser } from '../services/auth.service.js';
 
 // Register user controller

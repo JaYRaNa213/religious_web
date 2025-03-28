@@ -1,26 +1,12 @@
-// Import required modules
+// src/routes/auth.routes.js
 import express from 'express';
-import { registerUser, loginUser, logoutUser } from '../controllers/auth.controller.js';
+import { register, login, logout } from '../controllers/auth.controller.js';
 
 const router = express.Router();
 
-// Define routes for authentication
-/**
- * @route POST /api/auth/register
- * @description Register a new user
- */
-router.post('/register', registerUser);
+// Define auth routes
+router.post('/register', register);
+router.post('/login', login);
+router.post('/logout', logout);
 
-/**
- * @route POST /api/auth/login
- * @description Login user
- */
-router.post('/login', loginUser);
-
-/**
- * @route GET /api/auth/logout
- * @description Logout user
- */
-router.get('/logout', logoutUser);
-
-export default router; // Export the router
+export default router;

@@ -1,32 +1,30 @@
-// Import required modules
-import http from 'http';
+// src/server.js
+import express from 'express';
 import dotenv from 'dotenv';
-import app from './app.js'; // Import Express app from app.js
+import authRoutes from './routes/auth.routes.js';
 
-// Load environment variables from .env file
+// Load environment variables
 dotenv.config();
 
-// Define the port to run the server (default: 7000 if not specified in .env)
+// Initialize express app
+const app = express();
+
+// Middleware to parse incoming requests
+app.use(express.json());
+
+// Use authentication routes
+app.use('/api/auth', authRoutes);
+
+// Define a basic route
+app.get('/', (req, res) => {
+  res.send('Welcome to the Religious Website API!');
+});
+
+// Start the server
 const PORT = process.env.PORT || 7000;
+app.listen(PORT, () => {
+  console.log(`✅ Server is ready and running on port ${PORT}`);
+  console.log(`📚 Visit: http://localhost:${PORT}`);
+  console.log(`✅ Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
 
-// Create an HTTP server using Express app
-const server = http.createServer(app);
-
-// Start the server and listen on the defined port
-server.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
-
-// Handle unhandled promise rejections and log the error
-process.on('unhandledRejection', (err, promise) => {
-  console.log(`Error: ${err.message}`);
-  server.close(() => process.exit(1)); // Gracefully exit process on error
-});
-
-// Gracefully handle termination signals (e.g., Ctrl+C)
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received. Shutting down gracefully...');
-  server.close(() => {
-    console.log('Process terminated!');
-  });
 });

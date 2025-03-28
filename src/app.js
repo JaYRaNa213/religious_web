@@ -19,7 +19,9 @@ import paymentRoutes from './routes/payment.routes.js';
 
 
 // Import error handling middlewares
-import { notFound, errorHandler } from './middlewares/error.middleware.js';
+import errorHandler from './middleware/error.middleware.js';
+import notFound from './middleware/error.middleware.js';
+
 
 // Load environment variables from .env file
 dotenv.config();

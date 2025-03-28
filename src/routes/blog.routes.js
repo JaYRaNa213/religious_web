@@ -5,8 +5,8 @@ import {
   updateBlog,
   deleteBlog,
 } from '../controllers/blog.controller.js';
-import { verifyToken } from '../middlewares/auth.middleware.js';
-import { checkRole } from '../middlewares/role.middleware.js';
+import { verifyToken } from '../middleware/auth.middleware.js';
+import { checkRole } from '../middleware/role.middleware.js';
 
 const router = express.Router();
 
