@@ -21,7 +21,7 @@ export const initiatePayment = async (req, res) => {
         success: false,
         message: 'Invalid userId format. Must be a valid ObjectId.',
       });
-      console.log("This is User Id-------------",userId);
+     
     }
 
     // ✅ Check if the user exists
