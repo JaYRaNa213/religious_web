@@ -62,6 +62,7 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('api/emails', emailRoutes);
 
 
 

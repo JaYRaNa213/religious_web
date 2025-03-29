@@ -1,5 +1,7 @@
 // src/controllers/auth.controller.js
 import { registerUser, loginUser, logoutUser } from '../services/auth.service.js';
+import { getAllUsers } from '../services/auth.service.js';
+
 
 // Register user controller
 export const register = async (req, res) => {
@@ -52,6 +54,18 @@ export const getProfile = async (req, res) => {
       success: true,
       message: 'User profile fetched successfully',
       data: userProfile,
+    });
+  } catch (error) {
+    res.status(404).json({ success: false, message: error.message });
+  }
+};
+export const getUsers = async (req, res) => {
+  try {
+    const users = await getAllUsers();
+    res.status(200).json({
+      success: true,
+      message: 'All users fetched successfully',
+      data: users,
     });
   } catch (error) {
     res.status(404).json({ success: false, message: error.message });

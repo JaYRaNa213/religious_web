@@ -1,4 +1,3 @@
-// src/services/auth.service.js
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
@@ -9,7 +8,7 @@ const users = [];
 // ✅ Register User Logic
 // ========================
 export const registerUser = async (userData) => {
-  const { name, email, password ,userId} = userData;
+  const { name, email, password } = userData;
 
   // Check if user already exists
   const existingUser = users.find((user) => user.email === email);
@@ -20,10 +19,14 @@ export const registerUser = async (userData) => {
   // Hash password before saving
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  // Generate unique userId
+  const userId = Date.now().toString(); // ✅ Corrected userId generation
+
   // Create new user and push to mock DB
-  const newUser = { userId: Date.now(), name, email, password: hashedPassword };
+  const newUser = { userId, name, email, password: hashedPassword };
   users.push(newUser);
 
+  console.log('✅ New User Registered:', newUser);
   return newUser;
 };
 
@@ -42,15 +45,16 @@ export const loginUser = async (email, password) => {
     throw new Error('Invalid email or password');
   }
 
-  // Generate JWT token correctly
+  // Generate JWT token with userId
   const token = jwt.sign(
-    { id: user.id.toString(), email: user.email }, // Correct `user.id`
-    process.env.ACCESS_TOKEN_SECRET, // Corrected name
+    { id: user.userId.toString(), email: user.email }, // ✅ Corrected to user.userId
+    process.env.ACCESS_TOKEN_SECRET, // ✅ Use correct token secret
     {
       expiresIn: process.env.ACCESS_TOKEN_EXPIRY || '1d',
     }
   );
 
+  console.log('✅ User Logged In, Token Generated:', token);
   return token;
 };
 
@@ -65,15 +69,23 @@ export const logoutUser = async () => {
 // ✅ Get User Profile Logic
 // ========================
 export const getUserProfile = async (userId) => {
-  const user = users.find((user) => user.id.toString() === userId);
+  const user = users.find((user) => user.userId.toString() === userId); // ✅ Fixed to check userId properly
   if (!user) {
     throw new Error('User not found');
   }
 
   // Return user profile without the password
   const { password, ...userWithoutPassword } = user;
+  console.log('✅ User Profile Fetched:', userWithoutPassword);
   return userWithoutPassword;
 };
-
-
-
+// ========================
+// ✅ Get All Users Logic
+// ========================
+export const getAllUsers = async () => {
+  if (users.length === 0) {
+    throw new Error('No users found');
+  }
+  console.log('✅ All Users Fetched:', users);
+  return users.map(({ password, ...userWithoutPassword }) => userWithoutPassword);
+};

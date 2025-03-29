@@ -32,6 +32,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/emails', emailRoutes);
+app.use('/api/auth', authRoutes);
 // Define a basic route
 app.get('/', (req, res) => {
   res.send('Welcome to the Religious Website API!');

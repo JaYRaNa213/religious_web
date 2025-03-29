@@ -1,17 +1,16 @@
-// src/routes/auth.routes.js
 import express from 'express';
-import ApiError from '../utils/ApiError.js';
-
-import { register, login, logout,getProfile} from '../controllers/auth.controller.js';
-import { protect } from '../middleware/auth.middleware.js';
-
+import { register, login, logout, getProfile, getUsers } from '../controllers/auth.controller.js';
+import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
-// Define auth routes
+// ✅ Auth Routes
 router.post('/register', register);
 router.post('/login', login);
 router.post('/logout', logout);
-router.get('/profile', protect, getProfile);
+router.get('/profile', authMiddleware, getProfile);
+
+// ✅ New Route for Get All Users
+router.get('/users', authMiddleware, getUsers);
 
 export default router;
