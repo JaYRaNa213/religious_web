@@ -12,10 +12,10 @@ const MAX_DEPTH = 5;
 const IGNORE_FOLDERS = ['node_modules', '.git', '.next', 'dist', '.cache', '.idea', '.vscode'];
 
 // File to save tree output
-const OUTPUT_FILE = './directory_tree.txt';
+// const OUTPUT_FILE = './directory_tree.txt';
 
 // Initialize content for writing
-let treeOutput = '📂 Project Directory Tree\n\n';
+let treeOutput = '📂 Religious website Tree structure\n\n';
 
 // Function to print directory tree
 function printTree(dirPath, prefix = '', depth = 0) {
@@ -44,10 +44,10 @@ function printTree(dirPath, prefix = '', depth = 0) {
 }
 
 // Start printing from the ROOT_DIR
-console.log('📂 Project Directory Tree\n');
+console.log('📂 Religious website Tree structure\n');
 printTree(ROOT_DIR);
 console.log('\n✅ Tree generation complete!');
 
-// Save the output to the file
-fs.writeFileSync(OUTPUT_FILE, treeOutput);
-console.log(`\n📄 Tree saved to ${OUTPUT_FILE}`);
+// // Save the output to the file
+// fs.writeFileSync(OUTPUT_FILE, treeOutput);
+// console.log(`\n📄 Tree saved to ${OUTPUT_FILE}`);
